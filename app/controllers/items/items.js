@@ -9,7 +9,7 @@ const getItems = async (req, res) => {
     const items = await Item.find().map(item => {return {key: item.key, value: item.value}})
     res.send({items})
   } catch (e) {
-
+    res.status(500).send()
   }
 }
 
@@ -18,7 +18,7 @@ const delItems = async (req, res) => {
     await Item.deleteMany()
     res.status(204).send()
   } catch (e) {
-    console.log(e)
+    res.status(500).send()
   }
 }
 
@@ -37,7 +37,7 @@ const getItem = async (req, res) => {
       res.send({key: newItem.key, value: newItem.value})
     }
   } catch (e) {
-
+    res.status(500).send()
   }
 }
 
@@ -55,7 +55,7 @@ const postItem = async (req, res) => {
     await item.findOneAndUpdate({key: req.params.item}, {value: chance.sentence()})
     res.send({key: item.key, value: item.value})
   } catch(e) {
-
+    res.status(500).send()
   }
 }
 
