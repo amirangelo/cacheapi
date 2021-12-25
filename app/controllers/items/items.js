@@ -1,4 +1,5 @@
 const Chance = require('chance')
+const config = require('../../config')
 
 const Item = require('../../models/item')
 
@@ -25,6 +26,7 @@ const delItems = async (req, res) => {
 const getItem = async (req, res) => {
   try {
     const item = await Item.findOne({ key: req.params.item })
+    await checkCacheSize()
 
     if (item) {
       console.log('Cache hit')
@@ -37,6 +39,7 @@ const getItem = async (req, res) => {
       res.send({key: newItem.key, value: newItem.value})
     }
   } catch (e) {
+    console.log(e)
     res.status(500).send()
   }
 }
@@ -52,10 +55,23 @@ const delItem = async (req, res) => {
 
 const postItem = async (req, res) => {
   try {
+    await checkCacheSize()
     await item.findOneAndUpdate({key: req.params.item}, {value: chance.sentence()})
     res.send({key: item.key, value: item.value})
   } catch(e) {
     res.status(500).send()
+  }
+}
+
+// Delete the old item that inserted
+const checkCacheSize = async () => {
+  const count = await Item.count()
+  if (count >= config.app.cache.size) {
+    const item = await Item.findOne({}, {}, {sort: {lastUpdate: 1}})
+    const result = await Item.deleteOne({ key: item.key })
+    if (result.checkCacheSize !== 1) {
+      await checkCacheSize()
+    }
   }
 }
 
