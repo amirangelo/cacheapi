@@ -9,5 +9,5 @@ config.express = {
 
 config.mongodb = {
   port: process.env.MONGODB_PORT || 27017,
-  host: process.env.MONGODB_HOST || 'localhost'
+  host: process.env.MONGODB_HOST || '192.168.168.104'
 }
