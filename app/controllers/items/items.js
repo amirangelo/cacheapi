@@ -7,8 +7,8 @@ const chance = new Chance()
 
 const getItems = async (req, res) => {
   try {
-    const items = await Item.find().map(item => {return {key: item.key, value: item.value}})
-    res.send({items})
+    const items = await Item.find() || []
+    res.send({items: items.map(item => {return {key: item.key, value: item.value}})})
   } catch (e) {
     console.log(e)
     res.status(500).send()
@@ -59,13 +59,13 @@ const delItem = async (req, res) => {
 const postItem = async (req, res) => {
   try {
     const {body} = req
-    const key = req.params.item
+    const key = req.body.key
 
     const value = req.body.value || chance.sentence()
 
     await checkCacheSize()
-    await Item.findOneAndUpdate({key}, {value}, {upsert: true})
-    res.send({key, value})
+    await Item.findOneAndUpdate({ key }, { value }, { upsert: true })
+    res.send({ key, value })
   } catch(e) {
     console.log(e)
     res.status(500).send()
@@ -76,7 +76,7 @@ const postItem = async (req, res) => {
 const checkCacheSize = async () => {
   const count = await Item.count()
   if (count >= config.app.cache.size) {
-    const item = await Item.findOne({}, {}, {sort: {lastUpdate: 1}})
+    const item = await Item.findOne({}, {}, { sort: { lastUpdate: 1 }})
     const result = await Item.deleteOne({ key: item.key })
     if (result.checkCacheSize !== 1) {
       await checkCacheSize()

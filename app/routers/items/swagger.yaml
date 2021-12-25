@@ -1,0 +1,120 @@
+swagger: "2.0"
+info:
+  description: "This is a sample cacheapi server"
+  version: "1.0.0"
+  title: "Cacheapi"
+  contact:
+    email: "amir0mehdizadeh@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost:3000"
+basePath: "/"
+tags:
+- name: "items"
+  description: "Cache items"
+
+schemes:
+- "http"
+paths:
+  /items:
+    get:
+      tags:
+      - "items"
+      summary: "Find all items"
+      description: ""
+      operationId: "getItems"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: list of items
+          schema:
+            $ref: "#/definitions/Items"
+           
+    delete:
+      tags:
+      - "items"
+      summary: "Deletes all items"
+      description: ""
+      operationId: "deleteItems"
+      responses:
+        "204":
+          description: "No Content"
+          
+    post:
+      tags:
+      - "items"
+      summary: "Create/update one item"
+      description: ""
+      operationId: "postItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "body"
+        in: "body"
+        description: "Key and value of item"
+        schema:
+            $ref: "#/definitions/Item"
+      responses:
+        "200":
+          description: "No Content"
+          schema:
+            $ref: "#/definitions/Item"
+
+  /items/{item}:
+    get:
+      tags:
+      - "items"
+      summary: "Find item by key"
+      description: "Returns the value of key"
+      operationId: "getItem"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "item"
+        in: "path"
+        description: "The item to be get"
+        required: true
+        type: string
+
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Item"
+            
+    delete:
+      tags:
+      - "items"
+      summary: "Delete one item"
+      description: ""
+      operationId: "deleteItem"
+      parameters:
+      - name: "item"
+        in: "path"
+        description: "The item to be delete"
+        required: true
+        type: string
+      responses:
+        "204":
+          description: "No Content"
+          
+
+definitions:
+  Item:
+    type: "object"
+    properties:
+      key: 
+        type: "string"
+      value:
+        type: "string"
+  Items:
+    type: "object"
+    properties:
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/Item"
