@@ -4,7 +4,8 @@
   "description": "A sample cache api project",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "dev": "./node_modules/.bin/nodemon app/server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/amirangelo/cacheapi/issues"
   },
-  "homepage": "https://github.com/amirangelo/cacheapi#readme"
+  "homepage": "https://github.com/amirangelo/cacheapi#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
