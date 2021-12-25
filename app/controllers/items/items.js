@@ -28,13 +28,13 @@ const delItems = async (req, res) => {
 const getItem = async (req, res) => {
   try {
     const item = await Item.findOne({ key: req.params.item })
-    await checkCacheSize()
 
     if (item) {
       console.log('Cache hit')
       await Item.updateOne({ key: req.params.item }, { lastUpdate: new Date() })
       res.send({key: item.key, value: item.value})
     } else {
+      await checkCacheSize()
       console.log('Cache miss')
       const newItem = new Item({ key: req.params.item, value: chance.sentence() })
       await newItem.save()
