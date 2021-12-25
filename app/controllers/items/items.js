@@ -58,9 +58,14 @@ const delItem = async (req, res) => {
 
 const postItem = async (req, res) => {
   try {
+    const {body} = req
+    const key = req.params.item
+
+    const value = req.body.value || chance.sentence()
+
     await checkCacheSize()
-    await item.findOneAndUpdate({key: req.params.item}, {value: chance.sentence()})
-    res.send({key: item.key, value: item.value})
+    await Item.findOneAndUpdate({key}, {value}, {upsert: true})
+    res.send({key, value})
   } catch(e) {
     console.log(e)
     res.status(500).send()
